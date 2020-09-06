@@ -10,19 +10,17 @@ import UIKit
 
 class ToDoListVC: UITableViewController {
     
-    var itemArray = ["Buy Eggs","Go To the Gym"]
-    let defaults = UserDefaults.standard
-    
+    var itemArray = [Item]()
+    let dataURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Item.plist")
     
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if let items = defaults.array(forKey: "ToDoList") as? [String] {
-            itemArray = items
-        }
         
+        retrieveData()
+        print(dataURL)
         
     }
 
@@ -33,23 +31,25 @@ class ToDoListVC: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoCell", for: indexPath)
-        cell.textLabel?.text = itemArray[indexPath.row]
+        cell.textLabel?.text = itemArray[indexPath.row].title
         
         
-        
+        // ternary operator
+        cell.accessoryType = itemArray[indexPath.row].done == true ? .checkmark : .none
+
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .none
-        }else {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        }
+        // if true make it false and if false make it true
+        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+
         
-        
+        tableView.reloadData()
         tableView.deselectRow(at: indexPath, animated: true)
+        saveData()
+        
         
     }
     
@@ -72,16 +72,15 @@ class ToDoListVC: UITableViewController {
                 errorLabel.text = "Please Add Item"
                  self.present(alert, animated: true, completion: nil)
             }else {
-                self.itemArray.append(textField.text!)
-                self.defaults.setValue(self.itemArray, forKey: "ToDoList")
+                let newItem = Item()
+                newItem.title = textField.text!
+                self.itemArray.append(newItem)
+                self.saveData()
+                }
+
                 self.tableView.reloadData()
             }
-            
-        }
-        
-        
-        
-        
+
         alert.addTextField { (alertTextField) in
             alertTextField.placeholder = "Add Item"
             textField = alertTextField
@@ -92,18 +91,39 @@ class ToDoListVC: UITableViewController {
             alert.view.superview?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.dismissAlert)))
         }
         
-        
-        
-        
     }
+    
     
     @objc func dismissAlert() {
         dismiss(animated: true, completion: nil)
     }
     
     
+    func saveData() {
+        let encoder = PropertyListEncoder()
+        
+        do {
+            let data = try encoder.encode(itemArray)
+            try data.write(to: dataURL!)
+        }catch {
+            print("error encoding \(error)")
+            
+            
+        }
+        self.tableView.reloadData()
+        
+    }
     
-    
+    func retrieveData() {
+        do {
+            let data = try? Data(contentsOf: dataURL!)
+            let decoder = PropertyListDecoder()
+            itemArray = try decoder.decode([Item].self, from: data!)
+        }catch {
+            print("error decoding \(error)")
+        }
+        
+    }
     
 
 }

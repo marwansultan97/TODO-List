@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CBB020B6250A6C16006B2329 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBB020B4250A6C14006B2329 /* RealmSwift.framework */; };
+		CBB020B7250A6C16006B2329 /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBB020B5250A6C16006B2329 /* Realm.framework */; };
+		CBB020B8250A6C21006B2329 /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBB020B5250A6C16006B2329 /* Realm.framework */; };
+		CBB020B9250A6C21006B2329 /* Realm.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CBB020B5250A6C16006B2329 /* Realm.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CBB020BA250A6C21006B2329 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBB020B4250A6C14006B2329 /* RealmSwift.framework */; };
+		CBB020BB250A6C21006B2329 /* RealmSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CBB020B4250A6C14006B2329 /* RealmSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CBB020C0250A8693006B2329 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBB020BF250A8693006B2329 /* Item.swift */; };
+		CBB020C2250A86BE006B2329 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBB020C1250A86BE006B2329 /* Category.swift */; };
 		CBD6BBE6250279FF00E31297 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBD6BBE5250279FF00E31297 /* AppDelegate.swift */; };
 		CBD6BBE8250279FF00E31297 /* ToDoListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBD6BBE7250279FF00E31297 /* ToDoListVC.swift */; };
 		CBD6BBEB250279FF00E31297 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CBD6BBE9250279FF00E31297 /* Main.storyboard */; };
@@ -16,7 +24,26 @@
 		CBD6BC232506ED6F00E31297 /* CategoryTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBD6BC222506ED6F00E31297 /* CategoryTableView.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		CB3C20AF250A5926009BF619 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				CBB020BB250A6C21006B2329 /* RealmSwift.framework in Embed Frameworks */,
+				CBB020B9250A6C21006B2329 /* Realm.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		CBB020B4250A6C14006B2329 /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RealmSwift.framework; sourceTree = "<group>"; };
+		CBB020B5250A6C16006B2329 /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Realm.framework; sourceTree = "<group>"; };
+		CBB020BF250A8693006B2329 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		CBB020C1250A86BE006B2329 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		CBD6BBE2250279FF00E31297 /* TODO List.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "TODO List.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CBD6BBE5250279FF00E31297 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CBD6BBE7250279FF00E31297 /* ToDoListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoListVC.swift; sourceTree = "<group>"; };
@@ -33,6 +60,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CBB020B8250A6C21006B2329 /* Realm.framework in Frameworks */,
+				CBB020B7250A6C16006B2329 /* Realm.framework in Frameworks */,
+				CBB020BA250A6C21006B2329 /* RealmSwift.framework in Frameworks */,
+				CBB020B6250A6C16006B2329 /* RealmSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,6 +94,8 @@
 				CBD6BBF92503FF9200E31297 /* View */,
 				CBD6BBEE25027A0000E31297 /* LaunchScreen.storyboard */,
 				CBD6BBF125027A0000E31297 /* Info.plist */,
+				CBB020B5250A6C16006B2329 /* Realm.framework */,
+				CBB020B4250A6C14006B2329 /* RealmSwift.framework */,
 			);
 			path = "TODO List";
 			sourceTree = "<group>";
@@ -90,6 +123,8 @@
 			isa = PBXGroup;
 			children = (
 				CBD6BBFE2505607800E31297 /* DataModel.xcdatamodeld */,
+				CBB020BF250A8693006B2329 /* Item.swift */,
+				CBB020C1250A86BE006B2329 /* Category.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -104,6 +139,8 @@
 				CBD6BBDE250279FF00E31297 /* Sources */,
 				CBD6BBDF250279FF00E31297 /* Frameworks */,
 				CBD6BBE0250279FF00E31297 /* Resources */,
+				CB3C20AF250A5926009BF619 /* Embed Frameworks */,
+				CBB020BC250A6C27006B2329 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -160,15 +197,37 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		CBB020BC250A6C27006B2329 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nbash \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework/strip-frameworks.sh\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		CBD6BBDE250279FF00E31297 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CBB020C0250A8693006B2329 /* Item.swift in Sources */,
 				CBD6BBE8250279FF00E31297 /* ToDoListVC.swift in Sources */,
 				CBD6BC002505607800E31297 /* DataModel.xcdatamodeld in Sources */,
 				CBD6BBE6250279FF00E31297 /* AppDelegate.swift in Sources */,
 				CBD6BC232506ED6F00E31297 /* CategoryTableView.swift in Sources */,
+				CBB020C2250A86BE006B2329 /* Category.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -315,7 +374,27 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+				);
 				INFOPLIST_FILE = "TODO List/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -332,7 +411,27 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+					"$(PROJECT_DIR)/TODO\\ List",
+				);
 				INFOPLIST_FILE = "TODO List/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

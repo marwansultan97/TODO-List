@@ -9,11 +9,11 @@
 import Foundation
 import RealmSwift
 
-class Item: Object {
+//class Item: Object {
+
+//   dynamic var title : String = ""
+//   dynamic var done : Bool = false
+
     
-   dynamic var title : String = ""
-   dynamic var done : Bool = false
     
-    
-    
-}
+

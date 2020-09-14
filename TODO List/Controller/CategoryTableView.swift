@@ -8,7 +8,8 @@
 
 import UIKit
 import RealmSwift
-
+import SwipeCellKit
+import ChameleonFramework
 
 class CategoryTableView: UITableViewController {
     
@@ -16,13 +17,17 @@ class CategoryTableView: UITableViewController {
     var categoryArray : Results<Category>?
     
     
-
+  
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        tableView.separatorStyle = .none
+        tableView.rowHeight = 80
         retrieveData()
-        
-
+    
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
 
     }
 
@@ -34,17 +39,21 @@ class CategoryTableView: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
-        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath) as! SwipeTableViewCell
+        cell.delegate = self
+        cell.textLabel?.textColor = UIColor.init(contrastingBlackOrWhiteColorOn: FlatWhite(), isFlat: true)
         cell.textLabel?.text = categoryArray?[indexPath.row].name ?? "No Category Added"
+        let color = UIColor.init(hexString: (categoryArray?[indexPath.row].color)!)
+        cell.backgroundColor = color
+        cell.textLabel?.textColor = ContrastColorOf(color!, returnFlat: true)
 
         return cell
     }
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         performSegue(withIdentifier: "goToItems", sender: self)
+        tableView.deselectRow(at: indexPath, animated: true)
         
-
 
     }
     
@@ -55,32 +64,6 @@ class CategoryTableView: UITableViewController {
         }
         
     }
-    
-    
-    
-    
-    
-    
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if (editingStyle == UITableViewCell.EditingStyle.delete) {
-            let category = categoryArray?[indexPath.row]
-            do{
-                try realm.write {
-                    realm.delete(category!)
-                }
-            } catch {
-                print(error)
-            }
-            tableView.reloadData()
-        }
-    }
-
-
-
     
     
     @IBAction func addPressed(_ sender: UIBarButtonItem) {
@@ -105,6 +88,7 @@ class CategoryTableView: UITableViewController {
                 let newCategory = Category()
                 newCategory.name = textField.text!
                 newCategory.date = Date()
+                newCategory.color = UIColor.init(randomFlatColorOf: .light).hexValue()
                 self.saveData(category: newCategory)
                 
                 
@@ -145,48 +129,71 @@ class CategoryTableView: UITableViewController {
     
     func retrieveData() {
         
-        categoryArray = realm.objects(Category.self).sorted(byKeyPath: "name", ascending: true)
+        categoryArray = realm.objects(Category.self)
         tableView.reloadData()
 
     }
 
 }
 
+// MARK: - SearchBar
 
-extension CategoryTableView : UISearchBarDelegate {
 
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        
-        let predicate = NSPredicate(format: "name CONTAINS[cd] %@", searchBar.text!)
-        categoryArray = realm.objects(Category.self).filter(predicate).sorted(byKeyPath: "date", ascending: true)
-//        categoryArray = realm.objects(Category.self).sorted(byKeyPath: "name", ascending: true)
-        tableView.reloadData()
+//extension CategoryTableView : UISearchBarDelegate {
 //
-//        let request : NSFetchRequest<Category> = Category.fetchRequest()
-//        request.predicate = NSPredicate(format: "name CONTAINS[cd] %@", searchBar.text!)
-//        request.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
-//        do {
-//            categoryArray = try context.fetch(request)
+//    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
 //
-//        }catch {
-//            print("error fetching \(error)")
-//        }
+//        let predicate = NSPredicate(format: "name CONTAINS[cd] %@", searchBar.text!)
+//        categoryArray = realm.objects(Category.self).filter(predicate).sorted(byKeyPath: "name", ascending: true)
 //        tableView.reloadData()
+//        tableView.reloadData()
+//
+//    }
+//
+//    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+//        if searchBar.text == "" {
+//            retrieveData()
+//            DispatchQueue.main.async {
+//                searchBar.resignFirstResponder()
+//                self.retrieveData()
+//
+//            }
+//        }
+//    }
+//}
 
-    }
 
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if searchBar.text == "" {
-            retrieveData()
-            DispatchQueue.main.async {
-                searchBar.resignFirstResponder()
-                self.retrieveData()
-                
+// MARK: - SwipeCell
+
+extension CategoryTableView : SwipeTableViewCellDelegate {
+    
+    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
+        guard orientation == .right else { return nil }
+        
+        let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
+            // handle action by updating model with deletion
+            let category = self.categoryArray?[indexPath.row]
+            do{
+                try self.realm.write {
+                    self.realm.delete(category!)
+                }
+            } catch {
+                print(error)
             }
         }
+        
+        // customize the action appearance
+        deleteAction.image = UIImage(named: "trash")
+        
+        return [deleteAction]
     }
+    
 
-
-
-
+    func tableView(_ tableView: UITableView, editActionsOptionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> SwipeOptions {
+        var options = SwipeOptions()
+        options.expansionStyle = .destructive
+        return options
+    }
+    
 }

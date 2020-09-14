@@ -7,8 +7,9 @@
 //
 
 import UIKit
-import CoreData
 import RealmSwift
+import SwipeCellKit
+import ChameleonFramework
 
 class ToDoListVC: UITableViewController {
     
@@ -19,17 +20,39 @@ class ToDoListVC: UITableViewController {
     var selectedCategory : Category? {
         didSet {
             retrieveData()
+            
         }
     }
     
-
+    @IBOutlet weak var searchBar: UISearchBar!
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        tableView.rowHeight = 80
+        tableView.separatorStyle = .none
+        
+        
         retrieveData()
-	
+	    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        if let colorHex = selectedCategory?.color {
+            navigationController?.navigationBar.barTintColor = UIColor(hexString: colorHex)
+            searchBar.barTintColor = navigationController?.navigationBar.barTintColor
+            navigationController?.navigationBar.tintColor = ContrastColorOf(UIColor(hexString: colorHex)!, returnFlat: true)
+            navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor : ContrastColorOf(UIColor(hexString: colorHex)!, returnFlat: true)]
+        }
+        title = selectedCategory?.name
+        
+        
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationController?.navigationBar.barTintColor = UIColor(hexString: "1E518E")
+        navigationController?.navigationBar.tintColor = FlatWhite()
+        navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor : FlatWhite()]
     }
 
     
@@ -38,13 +61,23 @@ class ToDoListVC: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoCell", for: indexPath) as! SwipeTableViewCell
+        cell.delegate = self
         
         if let item = itemArray?[indexPath.row] {
+            cell.textLabel?.textColor = UIColor.init(contrastingBlackOrWhiteColorOn: FlatWhite(), isFlat: true)
             cell.textLabel?.text = item.title
             cell.accessoryType = item.done == true ? .checkmark : .none
+            let color = UIColor.init(hexString: selectedCategory!.color)?.darken(byPercentage: CGFloat(indexPath.row) / CGFloat(itemArray!.count))
+            cell.backgroundColor = color
+            cell.textLabel?.textColor = ContrastColorOf(color!, returnFlat: true)
+
+
+            
+            print(CGFloat(indexPath.row) / CGFloat(itemArray!.count))
+            
         } else {
-            cell.textLabel?.text = "No Items Added"
+            cell.textLabel!.text = "No Items Added"
         }
 
 
@@ -62,22 +95,6 @@ class ToDoListVC: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
 
     }
-    
-    
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if (editingStyle == UITableViewCell.EditingStyle.delete) {
-            let item = itemArray?[indexPath.row]
-            try! realm.write {
-                realm.delete(item!)
-            }
-            tableView.reloadData()
-        }
-    }
-    
     
 
     @IBAction func addButton(_ sender: UIBarButtonItem) {
@@ -104,11 +121,11 @@ class ToDoListVC: UITableViewController {
                         newItem.title = textField.text!
                         newItem.date = Date()
                         currentCategory.items.append(newItem)
-                        
+                        self.tableView.reloadData()
+
                     }
                 }
             }
-            self.tableView.reloadData()
             }
 
         alert.addTextField { (alertTextField) in
@@ -133,7 +150,7 @@ class ToDoListVC: UITableViewController {
     
     func retrieveData() {
         
-        itemArray = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
+        itemArray = selectedCategory?.items.sorted(byKeyPath: "date", ascending: true)
         tableView.reloadData()
 
     }
@@ -141,6 +158,7 @@ class ToDoListVC: UITableViewController {
 
 }
 
+// MARK: - SearchBar
 
 extension ToDoListVC : UISearchBarDelegate {
     
@@ -148,16 +166,9 @@ extension ToDoListVC : UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
         let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
-        itemArray = selectedCategory?.items.filter(predicate).sorted(byKeyPath: "date", ascending: true)
+        itemArray = selectedCategory?.items.filter(predicate).sorted(byKeyPath: "title", ascending: true)
         
-//        let request : NSFetchRequest<Item> = Item.fetchRequest()
-//        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
-//        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-//        do {
-//            itemArray = try context.fetch(request)
-//        }catch {
-//            print(error)
-//        }
+
         tableView.reloadData()
     }
     
@@ -170,6 +181,36 @@ extension ToDoListVC : UISearchBarDelegate {
  
         }
     }
+    
+}
+
+// MARK: - SwipeCell
+
+extension ToDoListVC: SwipeTableViewCellDelegate {
+    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
+        guard orientation == .right else { return nil }
+        
+        let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
+            // handle action by updating model with deletion
+            let item = self.itemArray?[indexPath.row]
+            try! self.realm.write {
+                self.realm.delete(item!)
+            }
+        }
+        
+        // customize the action appearance
+        deleteAction.image = UIImage(named: "trash")
+        
+        return [deleteAction]
+    }
+    
+    func tableView(_ tableView: UITableView, editActionsOptionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> SwipeOptions {
+        var options = SwipeOptions()
+        options.expansionStyle = .destructive
+        return options
+    }
+    
     
 }
 
